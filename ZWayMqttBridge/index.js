@@ -41,6 +41,7 @@ ZWayMqttBridge.prototype.init = function (config) {
 
         this.mqttBridge = new sockets.tcp();
         this.mqttBridge.onrecv = function (data) {
+            self.log('Connecting to Mqtt Bridge established!');
             self.connected = true;
         };
 
@@ -71,13 +72,13 @@ ZWayMqttBridge.prototype.init = function (config) {
     };
 
     this.createTopic = function(device) {
-        topic = '/';
+        var topic = '/';
         topic += self.config.topic_prefix;
         topic += '/';
         topic += self.normalizeTopicToken(self.findRoom(device.get('location')));
         topic += '/';
         topic += self.normalizeTopicToken(device.get('metrics:title'));
-        return title;
+        return topic;
     };
 
     this.normalizeTopicToken = function(token) {
