@@ -55,7 +55,6 @@ ZWayMqttBridge.prototype.connect = function () {
         console.log('Mqtt Bridge websocket was closed!');
         setTimeout(self.connect, 10000);
         self.connected = false;
-        self.mqttBridge.close();
         self.mqttBridge = null;
     };
 
@@ -63,7 +62,6 @@ ZWayMqttBridge.prototype.connect = function () {
         console.log('Mqtt Bridge websocket error: ' + ev.data);
         setTimeout(self.connect, 10000);
         self.connected = false;
-        self.mqttBridge.close();
         self.mqttBridge = null;
     };
 };
