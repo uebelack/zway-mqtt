@@ -12,7 +12,7 @@ server.listen(8080, function() {
     console.log((new Date()) + ' Server is listening on port 8080');
 });
 
-wsServer = new WebSocketServer({httpServer: server, autoAcceptConnections: false});
+wsServer = new WebSocketServer({httpServer: server, autoAcceptConnections: true});
 
 wsServer.on('request', function(request) {
     var connection = request.accept('echo-protocol', request.origin);
