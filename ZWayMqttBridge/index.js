@@ -18,14 +18,14 @@ ZWayMqttBridge.prototype.init = function (config) {
     var self = this;
 
 
-
-    this.log = function(message) {
+    this.log = function (message) {
         console.log('ZWayMqttBridge: ' + message);
     };
 
     if (!self.config.host || !self.config.port) {
         this.log('Host or port not configured! will not start!')
-    };
+    }
+    ;
 
     this.reconnect = function () {
         self.connected = false;
@@ -72,31 +72,29 @@ ZWayMqttBridge.prototype.init = function (config) {
         }
     };
 
-    this.handleUpdatRequest = function(message) {
+    this.handleUpdatRequest = function (message) {
         var device = self.findDevice(message.topic);
         if (device) {
             device.performCommand(message.payload);
         }
     };
 
-    this.findDevice = function(topic) {
+    this.findDevice = function (topic) {
         var devices = self.controller.devices;
         if (devices) {
-
             for (var i = 0; i < devices.length; i++) {
-
-                self.log(JSON.stringify(devices[i]));
-
-                var device_topic = self.createTopic(devices[i]);
-                if (device_topic + '/' + 'set' == topic) {
-                    return devices[i];
+                if (devices[i]) {
+                    var device_topic = self.createTopic(devices[i]);
+                    if (device_topic + '/' + 'set' == topic) {
+                        return devices[i];
+                    }
                 }
             }
         }
         return null;
     };
 
-    this.findRoom = function(id) {
+    this.findRoom = function (id) {
         var locations = self.controller.locations;
         if (locations) {
             for (var i = 0; i < locations.length; i++) {
@@ -108,7 +106,7 @@ ZWayMqttBridge.prototype.init = function (config) {
         return null;
     };
 
-    this.createTopic = function(device) {
+    this.createTopic = function (device) {
         var room = self.findRoom(device.get('location'));
         var topic = self.config.topic_prefix;
         topic += '/';
@@ -118,7 +116,7 @@ ZWayMqttBridge.prototype.init = function (config) {
         return topic;
     };
 
-    this.normalizeTopicToken = function(token) {
+    this.normalizeTopicToken = function (token) {
         token = token.toLowerCase();
         token = token.replace(/[^0-9a-z_]/g, '_');
         return token;
@@ -136,7 +134,7 @@ ZWayMqttBridge.prototype.init = function (config) {
             var buf = new ArrayBuffer(str.length); // 2 bytes for each char
             var bufView = new Uint8Array(buf);
 
-            for (var i=0; i < str.length; i++) {
+            for (var i = 0; i < str.length; i++) {
                 bufView[i] = str.charCodeAt(i);
             }
 
