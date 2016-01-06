@@ -84,6 +84,8 @@ ZWayMqttBridge.prototype.init = function (config) {
             self.controller.devices.forEach(function(dev) {
                self.log(dev.get('metrics:title'))
             });
+
+            self.log(JSON.stringify(self.controller.locations));
         }
     };
 
