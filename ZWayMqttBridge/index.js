@@ -33,15 +33,18 @@ ZWayMqttBridge.prototype.connect = function () {
 
     this.mqttBridge = new sockets.websocket('ws://192.168.0.62:8080');
 
-    console.log('MQTT:' +  this.mqttBridge);
-
-    if (!this.mqttBridge) {
-        console.log('Could not connect to Mqtt Bridge!');
-        setTimeout(self.connect, 10000);
-    }
+    setTimeout(function() {
+        if (self.mqttBridge && !self.connected) {
+            console.log('Could not connect to Mqtt Bridge after 5 seconds!');
+            self.mqttBridge.close()
+            self.mqttBridge = null;
+            setTimeout(self.connect, 10000);
+        }
+    }, 5000);
 
     this.mqttBridge.onopen = function () {
         console.log('Mqtt Bridge websocket connected!');
+        self.connected = true;
     };
 
     this.mqttBridge.onmessage = function (ev) {
@@ -51,6 +54,7 @@ ZWayMqttBridge.prototype.connect = function () {
     this.mqttBridge.onclose = function () {
         console.log('Mqtt Bridge websocket was closed!');
         setTimeout(self.connect, 10000);
+        self.connected = false;
         self.mqttBridge.close();
         self.mqttBridge = null;
     };
@@ -58,6 +62,7 @@ ZWayMqttBridge.prototype.connect = function () {
     this.mqttBridge.onerror = function (ev) {
         console.log('Mqtt Bridge websocket error: ' + ev.data);
         setTimeout(self.connect, 10000);
+        self.connected = false;
         self.mqttBridge.close();
         self.mqttBridge = null;
     };
