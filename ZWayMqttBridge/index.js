@@ -59,11 +59,11 @@ ZWayMqttBridge.prototype.init = function (config) {
         if (self.mqttBridge) {
             console.log('Mqtt Bridge: Sending update to Client...')
 
+            var devmap = JSON.parse(JSON.stringify(device))
+
             var message = {
-                'topic': device['metrics']['title'],
-                'payload': device['metrics']['level'],
-                'metrics2': device.metrics,
-                'metrics3': device['metrics'],
+                'topic': devmap['metrics']['title'],
+                'payload': devmap['metrics']['level']
             }
 
             var str = JSON.stringify(message);
