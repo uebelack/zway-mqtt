@@ -33,6 +33,11 @@ ZWayMqttBridge.prototype.connect = function () {
 
     this.mqttBridge = new sockets.websocket('ws://192.168.0.62:8080');
 
+    if (!this.mqttBridge) {
+        console.log('Could not connect to Mqtt Bridge!');
+        setTimeout(self.connect, 10000);
+    }
+
     this.mqttBridge.onopen = function () {
         console.log('Mqtt Bridge websocket connected!');
     };
