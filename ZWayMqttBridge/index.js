@@ -15,6 +15,8 @@ _module = ZWayMqttBridge;
 ZWayMqttBridge.prototype.init = function (config) {
     ZWayMqttBridge.super_.prototype.init.call(this, config);
 
+    var self = this;
+
     this.mqttBridge = new sockets.websocket('ws://192.168.0.62:8080');
 
     this.mqttBridge.onopen = function() {
@@ -34,7 +36,7 @@ ZWayMqttBridge.prototype.init = function (config) {
     };
 
     this.deviceUpdate = function (device) {
-        this.mqttBridge.send(JSON.stringify(device, null, 4));
+        self.mqttBridge.send(JSON.stringify(device, null, 4));
     };
 
     this.controller.devices.on('change:metrics:level', self.deviceUpdate);
