@@ -41,8 +41,11 @@ ZWayMqttBridge.prototype.init = function (config) {
 
         this.mqttBridge = new sockets.tcp();
         this.mqttBridge.onrecv = function (data) {
-            self.log('Connecting to Mqtt Bridge established!');
-            self.connected = true;
+            if (!self.connected) {
+                self.log('Connecting to Mqtt Bridge established!');
+                self.connected = true;
+            }
+
             if (data) {
                 var messageStr = String.fromCharCode.apply(null, new Uint8Array(data));
                 if (messageStr != 'HELLO') {
@@ -54,7 +57,7 @@ ZWayMqttBridge.prototype.init = function (config) {
             }
         };
 
-        this.mqttBridge.onclose = function () {
+        this.mqttBridge.onclose = function (data) {
             self.log('Mqtt Bridge connection was closed!');
             self.reconnect();
         };

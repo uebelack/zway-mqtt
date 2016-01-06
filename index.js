@@ -5,14 +5,13 @@ var mqttClient  = mqtt.connect('mqtt://192.168.0.210');
 var bridgeServer = net.createServer();
 var bridgeClient = null;
 
-
 mqttClient.on('connect', function () {
     mqttClient.subscribe('halti/#');
 });
 
 mqttClient.on('message', function (topic, payload) {
-    if (bridgeClient) {
-        var message = JSON.stringify({topic: topic, payload: payload});
+    if (topic.indexOf('/set', topic.length - '/set'.length) !== -1 && bridgeClient) {
+        var message = JSON.stringify({topic: topic, payload: payload.toString()});
         console.log("SENDING: " + message)
         bridgeClient.write(message);
     }
