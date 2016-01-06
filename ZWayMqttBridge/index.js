@@ -65,7 +65,9 @@ ZWayMqttBridge.prototype.init = function (config) {
 
     this.findRoom = function(id) {
         return self.controller.locations.forEach(function(room) {
+            self.log(room);
            if (room.id == id) {
+               self.log('Found Room!');
                return room;
            }
         });
@@ -89,6 +91,8 @@ ZWayMqttBridge.prototype.init = function (config) {
 
     this.deviceUpdate = function (device) {
         if (self.mqttBridge) {
+            self.log(device.get('id'))
+            self.log(self.findRoom(device.get('id')))
 
             var message = {
                 'topic': self.createTopic(device),
