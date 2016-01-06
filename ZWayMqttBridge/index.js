@@ -64,11 +64,9 @@ ZWayMqttBridge.prototype.init = function (config) {
     };
 
     this.findRoom = function(id) {
-        self.log('Searching for room with id ' + id);
         var locations = self.controller.locations;
         if (locations) {
             for (var i = 0; i < locations.length; i++) {
-                console.log(locations[i].id);
                 if (locations[i].id == id) {
                     return locations[i];
                 }
@@ -78,12 +76,19 @@ ZWayMqttBridge.prototype.init = function (config) {
     };
 
     this.createTopic = function(device) {
+
         var topic = '/';
+        self.log(topic)
         topic += self.config.topic_prefix;
+        self.log(topic)
         topic += '/';
+        self.log(topic)
         topic += self.normalizeTopicToken(self.findRoom(device.get('location')));
+        self.log(topic)
         topic += '/';
+        self.log(topic)
         topic += self.normalizeTopicToken(device.get('metrics:title'));
+        self.log(topic)
         return topic;
     };
 
@@ -95,9 +100,6 @@ ZWayMqttBridge.prototype.init = function (config) {
 
     this.deviceUpdate = function (device) {
         if (self.mqttBridge) {
-
-            self.log(self.findRoom(device.get('location')))
-
             var message = {
                 'topic': self.createTopic(device),
                 'payload': device.get('metric:level')
