@@ -28,6 +28,7 @@ ZWayMqttBridge.prototype.init = function (config) {
 };
 
 ZWayMqttBridge.prototype.reconnect = function () {
+    var self = this;
     self.connected = false;
     self.mqttBridge = null;
     setTimeout(function() {
