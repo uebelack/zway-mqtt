@@ -19,9 +19,12 @@ ZWayMqttBridge.prototype.init = function (config) {
 
     this.reconnect = function () {
         self.connected = false;
-        self.mqttBridge = null;
+        if (self.mqttBridge) {
+            self.mqttBridge.close()
+            self.mqttBridge = null;
+        }
         console.log('Will try to reconnect to Mqtt Bridge in 10 seconds ...');
-        setTimeout(function() {
+        setTimeout(function () {
             console.log('Will try to reconnect to Mqtt Bridge ...');
             self.connect();
         }, 10000);
