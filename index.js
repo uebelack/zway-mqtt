@@ -1,29 +1,31 @@
 var mqtt = require('mqtt');
 var net = require('net');
 
-var client  = mqtt.connect('mqtt://192.168.0.210');
-var server = net.createServer();
+var mqttClient  = mqtt.connect('mqtt://192.168.0.210');
+var bridgeServer = net.createServer();
+var bridgeClient = null;
 
-client.on('connect', function () {
-    client.subscribe('halti/#');
+
+mqttClient.on('connect', function () {
+    mqttClient.subscribe('halti/#');
 });
 
-client.on('message', function (topic, message) {
-    console.log(topic.toString() + "->" + message.toString());
+mqttClient.on('message', function (topic, payload) {
+    if (bridgeClient) {
+        bridgeClient.write(JSON.stringify({topic: topic, payload: payload}));
+    }
 });
 
-
-server.on('connection', function(socket) { //This is a standard net.Socket
-    console.log('Got a client!');
-    socket.write('ZWayMqttBridge\r\n');
-    socket.on('data', function (data) {
-        console.log(data.toString());
+bridgeServer.on('connection', function(socket) {
+    bridgeClient = socket;
+    bridgeClient.write('Hello!')
+    bridgeClient.on('data', function (data) {
         var message = JSON.parse(data.toString());
         if (message && message.payload) {
-            client.publish(message.topic, message.payload.toString());
+            mqttClient.publish(message.topic, message.payload.toString());
         }
     });
 });
 
 
-server.listen(8080);
+bridgeServer.listen(8080);
