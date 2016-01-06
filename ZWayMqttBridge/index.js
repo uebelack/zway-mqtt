@@ -61,7 +61,7 @@ ZWayMqttBridge.prototype.init = function (config) {
 
             var message = JSON.stringify(device, null, 4);
 
-            var buf = new ArrayBuffer(message.length*2); // 2 bytes for each char
+            var buf = new ArrayBuffer(message.length); // 2 bytes for each char
             var bufView = new Uint8Array(buf);
 
             for (var i=0; i < message.length; i++) {
