@@ -18,7 +18,7 @@ mqttClient.on('message', function (topic, payload) {
 
 bridgeServer.on('connection', function(socket) {
     bridgeClient = socket;
-    bridgeClient.write('Hello!')
+    bridgeClient.write('HELLO')
     bridgeClient.on('data', function (data) {
         var message = JSON.parse(data.toString());
         if (message && message.payload) {
