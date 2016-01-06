@@ -37,6 +37,8 @@ ZWayMqttBridge.prototype.init = function (config) {
 
             self.mqttBridge.onerror = function (ev) {
                 console.log('Mqtt Bridge websocket error: ' + ev.data);
+                self.mqttBridge.close();
+                self.mqttBridge = null;
             };
         }
 
@@ -49,5 +51,9 @@ ZWayMqttBridge.prototype.init = function (config) {
 };
 
 ZWayMqttBridge.prototype.stop = function () {
-
+    var self = this;
+    if (self.mqttBridge) {
+        self.mqttBridge.close();
+        self.mqttBridge = null;
+    }
 };
