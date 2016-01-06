@@ -57,6 +57,7 @@ ZWayMqttBridge.prototype.init = function (config) {
 
     this.deviceUpdate = function (device) {
         if (self.mqttBridge) {
+            console.log('Mqtt Bridge: Sending update to Client...')
             self.mqttBridge.send(JSON.stringify(device, null, 4));
         }
     };
