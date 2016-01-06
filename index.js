@@ -2,6 +2,7 @@ var WebSocketServer = require('websocket').server;
 var http = require('http');
 var mqtt = require('mqtt');
 
+/*
 var server = http.createServer(function(request, response) {
     console.log((new Date()) + ' Received request for ' + request.url);
     response.writeHead(404);
@@ -32,6 +33,23 @@ wsServer.on('request', function(request) {
     });
 });
 
+*/
+
+
+
+var net = require('net'),
+    JsonSocket = require('json-socket');
+
+var port = 8080;
+var server = net.createServer();
+server.listen(port);
+server.on('connection', function(socket) { //This is a standard net.Socket
+    socket.write('Echo server\r\n');
+    socket.on('data', function (data) {
+        console.log(data.toString());
+    });
+
+});
 
 
 var client  = mqtt.connect('mqtt://192.168.0.210');

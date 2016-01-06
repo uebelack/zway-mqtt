@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/goodfield/zway-mqtt#readme",
   "dependencies": {
+    "json-socket": "^0.1.2",
     "mqtt": "^1.6.3",
+    "socket.io": "^1.4.0",
     "websocket": "^1.0.22"
   }
 }
