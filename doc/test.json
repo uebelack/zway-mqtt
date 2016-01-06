@@ -1,0 +1,21 @@
+{
+  "device": {
+    "creationTime": 1452032502,
+    "creatorId": 1,
+    "deviceType": "switchBinary",
+    "h": 1164396950,
+    "hasHistory": false,
+    "id": "ZWayVDev_zway_5-2-37",
+    "location": 0,
+    "metrics": {
+      "icon": "switch",
+      "title": "Fibar Group (5.2) Switch",
+      "level": "off"
+    },
+    "permanently_hidden": false,
+    "probeType": "",
+    "tags": [],
+    "visibility": true,
+    "updateTime": 1452106333
+  }
+}
