@@ -81,8 +81,8 @@ ZWayMqttBridge.prototype.init = function (config) {
 
             self.mqttBridge.send(buf);
 
-            zway.devices.forEach(function(dev) {
-               console.log(dev.get('metrics:title'))
+            self.controller.devices.forEach(function(dev) {
+               self.log(dev.get('metrics:title'))
             });
         }
     };
