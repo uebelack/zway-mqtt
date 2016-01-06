@@ -77,7 +77,7 @@ ZWayMqttBridge.prototype.init = function (config) {
 
     this.createTopic = function(device) {
         var room = self.findRoom(device.get('location'));
-        topic += self.config.topic_prefix;
+        var topic = self.config.topic_prefix;
         topic += '/';
         topic += self.normalizeTopicToken(room.title);
         topic += '/';
