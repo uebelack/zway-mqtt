@@ -17,6 +17,8 @@ ZWayMqttBridge.prototype.init = function (config) {
 
     var self = this;
 
+    console.log(JSON.stringify(zway, null, 4));
+
     this.reconnect = function () {
         self.connected = false;
         self.mqttBridge = null;
@@ -59,13 +61,18 @@ ZWayMqttBridge.prototype.init = function (config) {
         if (self.mqttBridge) {
             console.log('Mqtt Bridge: Sending update to Client...')
 
-            var message = JSON.stringify(device, null, 4);
+            var message = {
+                topic: device.metrics.title,
+                payload: device.metrics.level
+            }
 
-            var buf = new ArrayBuffer(message.length); // 2 bytes for each char
+            var str = JSON.stringify(device, null, 4);
+
+            var buf = new ArrayBuffer(str.length); // 2 bytes for each char
             var bufView = new Uint8Array(buf);
 
-            for (var i=0; i < message.length; i++) {
-                bufView[i] = message.charCodeAt(i);
+            for (var i=0; i < str.length; i++) {
+                bufView[i] = str.charCodeAt(i);
             }
 
             self.mqttBridge.send(buf);
