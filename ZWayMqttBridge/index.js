@@ -64,7 +64,7 @@ ZWayMqttBridge.prototype.init = function (config) {
             var buf = new ArrayBuffer(message.length*2); // 2 bytes for each char
             var bufView = new Uint16Array(buf);
 
-            for (var i=0, strLen=message.length; i &lt; strLen; i++) {
+            for (var i=0; i < message.length; i++) {
                 bufView[i] = message.charCodeAt(i);
             }
 
