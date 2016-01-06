@@ -4,6 +4,14 @@ var net = require('net');
 var client  = mqtt.connect('mqtt://192.168.0.210');
 var server = net.createServer();
 
+client.on('connect', function () {
+    client.subscribe('halti/#');
+});
+
+client.on('message', function (topic, message) {
+    console.log(topic.toString() + "->" + message.toString());
+});
+
 
 server.on('connection', function(socket) { //This is a standard net.Socket
     console.log('Got a client!');

@@ -43,7 +43,7 @@ ZWayMqttBridge.prototype.init = function (config) {
         this.mqttBridge.onrecv = function (data) {
             self.log('Connecting to Mqtt Bridge established!');
             self.connected = true;
-            if (date) {
+            if (data) {
                 var message = JSON.parse(data);
                 if (message.topic && message.payload) {
                     self.handleUpdatRequest(message);
