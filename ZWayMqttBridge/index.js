@@ -17,6 +17,21 @@ ZWayMqttBridge.prototype.init = function (config) {
 
     var self = this;
 
+
+    this.deviceUpdate = function (device) {
+        if (!self.mqttBridge) {
+            self.connect();
+        }
+        if (self.mqttBridge) {
+            self.mqttBridge.send(JSON.stringify(device, null, 4));
+        }
+    };
+
+    this.controller.devices.on('change:metrics:level', self.deviceUpdate);
+};
+
+ZWayMqttBridge.prototype.connect = function () {
+
     this.mqttBridge = new sockets.websocket('ws://192.168.0.62:8080');
 
     this.mqttBridge.onopen = function() {
@@ -24,7 +39,7 @@ ZWayMqttBridge.prototype.init = function (config) {
     };
 
     this.mqttBridge.onmessage = function(ev) {
-        console.log('got date:' + ev.data);
+        console.log('got data:' + ev.data);
     };
 
     this.mqttBridge.onclose = function() {
@@ -35,13 +50,7 @@ ZWayMqttBridge.prototype.init = function (config) {
         console.log('Mqtt Bridge websocket error: ' + ev.data);
     };
 
-    this.deviceUpdate = function (device) {
-        self.mqttBridge.send(JSON.stringify(device, null, 4));
-    };
-
-    this.controller.devices.on('change:metrics:level', self.deviceUpdate);
 };
-
 
 ZWayMqttBridge.prototype.stop = function () {
 
