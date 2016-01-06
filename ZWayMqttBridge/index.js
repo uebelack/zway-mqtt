@@ -18,7 +18,7 @@ ZWayMqttBridge.prototype.init = function (config) {
     var self = this;
 
 
-    console.log(self.host);
+    console.log(self.config.host);
     console.log(self.port);
     console.log(self.secret);
 
