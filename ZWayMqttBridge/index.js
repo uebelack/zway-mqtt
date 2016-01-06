@@ -15,33 +15,55 @@ _module = ZWayMqttBridge;
 ZWayMqttBridge.prototype.init = function (config) {
     ZWayMqttBridge.super_.prototype.init.call(this, config);
 
-    console.log('ZWayMqttBridge: will open socket ...');
     var self = this;
 
-    var socket = new sockets.tcp();
-    socket.reusable();
-    socket.bind(8888);
-
-    socket.onrecv = function(data) {
-        console.log('ZWayMqttBridge: client connected!');
-        self.client = this;
+    this.reconnect = function () {
+        self.connected = false;
+        self.mqttBridge = null;
+        console.log('Will try to reconnect to Mqtt Bridge in 10 seconds ...');
+        setTimeout(function () {
+            console.log('Will try to reconnect to Mqtt Bridge ...');
+            self.connect();
+        }, 10000);
     };
 
-    socket.onclose = function(data) {
-        console.log('ZWayMqttBridge: client disconnected!');
-        self.client = null;
-    };
+    this.connect = function () {
+        console.log('Connecting to Mqtt Bridge ....');
 
-    socket.listen();
+        this.mqttBridge = new sockets.tcp();
 
-    console.log('ZWayMqttBridge: listening on port 8888');
+        if (this.mqttBridge.connect('192.168.0.62', 8080)) {
 
-    this.deviceUpdate = function (device) {
-        if (self.client) {
-            self.client.send(JSON.stringify(device, null, 4));
+            setTimeout(function () {
+                if (self.mqttBridge && !self.connected) {
+                    console.log('Could not connect to Mqtt Bridge after 5 seconds!');
+                    self.reconnect();
+                }
+            }, 5000);
+
+            this.mqttBridge.onrecv = function (data) {
+                console.log('Mqtt Bridge server:' + data);
+                self.connected = true;
+            };
+
+            this.mqttBridge.onclose = function () {
+                console.log('Mqtt Bridge websocket was closed!');
+                self.reconnect();
+            };
+
+        } else {
+            console.log('Could not connect to Mqtt Bridge!');
+            self.reconnect();
         }
     };
 
+    this.deviceUpdate = function (device) {
+        if (self.mqttBridge) {
+            self.mqttBridge.send(JSON.stringify(device, null, 4));
+        }
+    };
+
+    this.connect();
     this.controller.devices.on('change:metrics:level', self.deviceUpdate);
 };
 
