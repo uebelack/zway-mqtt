@@ -31,14 +31,15 @@ ZWayMqttBridge.prototype.reconnect = function () {
     var self = this;
     self.connected = false;
     self.mqttBridge = null;
+    console.log('Will try to reconnect to Mqtt Bridge in 10 seconds ...');
     setTimeout(function() {
-        console.log('Will try to reconnect to Mqtt Brdige ...');
+        console.log('Will try to reconnect to Mqtt Bridge ...');
         self.connect();
     }, 10000);
 }
 
 ZWayMqttBridge.prototype.connect = function () {
-    console.log('Connecting to Mqtt Brdige ....');
+    console.log('Connecting to Mqtt Bridge ....');
     var self = this;
     this.mqttBridge = new sockets.websocket('ws://192.168.0.62:8080');
 
