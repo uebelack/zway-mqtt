@@ -83,21 +83,10 @@ ZWayMqttBridge.prototype.init = function (config) {
     };
 
     this.findDevice = function (topic) {
-
-        var devices = self.controller.devices;
-        if (devices) {
-            for (var i = 0; i < devices.length; i++) {
-
-                self.log(JSON.stringify(devices[i]));
-                /*
-                    var device_topic = self.createTopic(devices[i]);
-                    if (device_topic + '/' + 'set' == topic) {
-                        return devices[i];
-                    }
-                    */
-            }
-        }
-        return null;
+        return self.controller.devices.findWhere(function (device) {
+            var device_topic = self.createTopic(device);
+            return device_topic + '/' + 'set' == topic;
+        });
     };
 
     this.findRoom = function (id) {
