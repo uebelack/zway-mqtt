@@ -51,7 +51,12 @@ ZWayMqttBridge.prototype.init = function (config) {
                 if (messageStr != 'HELLO') {
                     var message = JSON.parse(messageStr);
                     if (message.topic && message.payload) {
-                        self.handleUpdatRequest(message);
+                        self.controller.devices.filter(function (device) {
+                            var device_topic = self.createTopic(device);
+                            return device_topic + '/' + 'set' == topic;
+                        }).map(function(device) {
+                            device.performCommand(message.payload);
+                        });
                     }
                 }
             }
@@ -73,20 +78,6 @@ ZWayMqttBridge.prototype.init = function (config) {
             self.log('Could not connect to Mqtt Bridge!');
             self.reconnect();
         }
-    };
-
-    this.handleUpdatRequest = function (message) {
-        var device = self.findDevice(message.topic);
-        if (device) {
-            device.performCommand(message.payload);
-        }
-    };
-
-    this.findDevice = function (topic) {
-        return self.controller.devices.findWhere(function (device) {
-            var device_topic = self.createTopic(device);
-            return device_topic + '/' + 'set' == topic;
-        });
     };
 
     this.findRoom = function (id) {
