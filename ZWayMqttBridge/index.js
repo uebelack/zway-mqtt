@@ -63,7 +63,7 @@ ZWayMqttBridge.prototype.init = function (config) {
                 'topic': device['metrics']['title'],
                 'payload': device['metrics']['level'],
                 'metrics2': device.metrics,
-                'metrics2': device['metrics'],
+                'metrics3': device['metrics'],
             }
 
             var str = JSON.stringify(message);
