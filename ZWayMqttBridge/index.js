@@ -76,21 +76,13 @@ ZWayMqttBridge.prototype.init = function (config) {
     };
 
     this.createTopic = function(device) {
-
         var room = self.findRoom(device.get('location'));
-
-        self.log(JSON.stringify(room));
-
         var topic = '/';
         topic += self.config.topic_prefix;
         topic += '/';
-        self.log(topic)
         topic += self.normalizeTopicToken(room.title);
-        self.log(topic)
         topic += '/';
-        self.log(topic)
         topic += self.normalizeTopicToken(device.get('metrics:title'));
-        self.log(topic)
         return topic;
     };
 
@@ -108,9 +100,7 @@ ZWayMqttBridge.prototype.init = function (config) {
             };
 
             var str = JSON.stringify(message);
-
             self.log('Sending update to bridge:' + str);
-
             var buf = new ArrayBuffer(str.length); // 2 bytes for each char
             var bufView = new Uint8Array(buf);
 
