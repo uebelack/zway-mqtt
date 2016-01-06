@@ -1,0 +1,33 @@
+{
+  "singleton" : true,
+  "dependencies": ["Cron"],
+  "category" : "device_enhancements",
+  "author" : "David Uebelacker",
+  "icon" : "icon.png",
+  "moduleName":"ZWayMqttBridge",
+  "version" : "1.0.0",
+  "maturity" : "alpha",
+  "repository" : {
+    "type" : "git",
+    "source" : "https://github.com/goodfield/zway-mqtt"
+  },
+  "defaults" : {
+    "title" : "ZWayMqttBridge",
+    "description" : "Simple Module needed by the ZWay Mqtt bridge",
+    "devices": []
+  },
+  "schema": {
+    "properties": {
+      "devices": {
+        "type": "array",
+        "items": {
+          "field":"enum",
+          "datasource": "namespaces",
+          "enum": "namespaces:devices_toggleButton:deviceId, namespaces:devices_switchControl:deviceId,namespaces:devices_switchBinary:deviceId,namespaces:devices_switchMultilevel:deviceId,namespaces:devices_sensorBinary:deviceId,namespaces:devices_sensorMultilevel:deviceId,namespaces:devices_sensorMultiline:deviceId,namespaces:devices_toggleButton:deviceId,namespaces:devices_fan:deviceId,namespaces:devices_doorLock:deviceId,namespaces:devices_thermostat:deviceId",
+          "required": false
+        }
+      }
+    }
+  }
+}
+
