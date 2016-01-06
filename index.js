@@ -12,16 +12,20 @@ mqttClient.on('connect', function () {
 
 mqttClient.on('message', function (topic, payload) {
     if (bridgeClient) {
-        bridgeClient.write(JSON.stringify({topic: topic, payload: payload}));
+        var message = JSON.stringify({topic: topic, payload: payload});
+        console.log("SENDING: " + message)
+        bridgeClient.write(message);
     }
 });
 
 bridgeServer.on('connection', function(socket) {
     bridgeClient = socket;
+    console.log("Client connected!")
     bridgeClient.write('HELLO')
     bridgeClient.on('data', function (data) {
         var message = JSON.parse(data.toString());
         if (message && message.payload) {
+            console.log("RECIEVED: " + data.toString())
             mqttClient.publish(message.topic, message.payload.toString());
         }
     });
