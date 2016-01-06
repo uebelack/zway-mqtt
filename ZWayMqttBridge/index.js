@@ -83,16 +83,18 @@ ZWayMqttBridge.prototype.init = function (config) {
     };
 
     this.findDevice = function (topic) {
-        self.log(JSON.stringify(self.controller.devices));
+
         var devices = self.controller.devices;
         if (devices) {
             for (var i = 0; i < devices.length; i++) {
-                if (devices[i]) {
+
+                self.log(JSON.stringify(devices[i]));
+                /*
                     var device_topic = self.createTopic(devices[i]);
                     if (device_topic + '/' + 'set' == topic) {
                         return devices[i];
                     }
-                }
+                    */
             }
         }
         return null;
