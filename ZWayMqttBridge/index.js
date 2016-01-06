@@ -27,18 +27,24 @@ ZWayMqttBridge.prototype.init = function (config) {
     this.controller.devices.on('change:metrics:level', self.deviceUpdate);
 };
 
+ZWayMqttBridge.prototype.reconnect = function () {
+    self.connected = false;
+    self.mqttBridge = null;
+    setTimeout(function() {
+        console.log('Will try to reconnect to Mqtt Brdige ...');
+        self.connect();
+    }, 10000);
+}
+
 ZWayMqttBridge.prototype.connect = function () {
     console.log('Connecting to Mqtt Brdige ....');
     var self = this;
-
     this.mqttBridge = new sockets.websocket('ws://192.168.0.62:8080');
 
     setTimeout(function() {
         if (self.mqttBridge && !self.connected) {
             console.log('Could not connect to Mqtt Bridge after 5 seconds!');
-            self.connected = false;
-            self.mqttBridge = null;
-            setTimeout(self.connect, 10000);
+            self.reconnect();
         }
     }, 5000);
 
@@ -53,16 +59,12 @@ ZWayMqttBridge.prototype.connect = function () {
 
     this.mqttBridge.onclose = function () {
         console.log('Mqtt Bridge websocket was closed!');
-        setTimeout(self.connect, 10000);
-        self.connected = false;
-        self.mqttBridge = null;
+        self.reconnect();
     };
 
     this.mqttBridge.onerror = function (ev) {
         console.log('Mqtt Bridge websocket error: ' + ev.data);
-        setTimeout(self.connect, 10000);
-        self.connected = false;
-        self.mqttBridge = null;
+        self.reconnect();
     };
 };
 
