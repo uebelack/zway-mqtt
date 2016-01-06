@@ -36,7 +36,7 @@ ZWayMqttBridge.prototype.connect = function () {
     setTimeout(function() {
         if (self.mqttBridge && !self.connected) {
             console.log('Could not connect to Mqtt Bridge after 5 seconds!');
-            self.mqttBridge.close()
+            self.connected = false;
             self.mqttBridge = null;
             setTimeout(self.connect, 10000);
         }
