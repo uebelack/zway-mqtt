@@ -32,25 +32,23 @@ ZWayMqttBridge.prototype.init = function (config) {
 
         this.mqttBridge = new sockets.tcp();
 
-        if (this.mqttBridge.connect('192.168.0.62', 8080)) {
+        this.mqttBridge.onrecv = function (data) {
+            console.log('Mqtt Bridge server:' + data);
+            self.connected = true;
+        };
 
+        this.mqttBridge.onclose = function () {
+            console.log('Mqtt Bridge websocket was closed!');
+            self.reconnect();
+        };
+
+        if (this.mqttBridge.connect('192.168.0.62', 8080)) {
             setTimeout(function () {
                 if (self.mqttBridge && !self.connected) {
                     console.log('Could not connect to Mqtt Bridge after 5 seconds!');
                     self.reconnect();
                 }
             }, 5000);
-
-            this.mqttBridge.onrecv = function (data) {
-                console.log('Mqtt Bridge server:' + data);
-                self.connected = true;
-            };
-
-            this.mqttBridge.onclose = function () {
-                console.log('Mqtt Bridge websocket was closed!');
-                self.reconnect();
-            };
-
         } else {
             console.log('Could not connect to Mqtt Bridge!');
             self.reconnect();

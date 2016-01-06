@@ -44,7 +44,7 @@ var port = 8080;
 var server = net.createServer();
 server.listen(port);
 server.on('connection', function(socket) { //This is a standard net.Socket
-    socket.write('Echo server\r\n');
+    socket.write('Welcome to ZWayMqttBridge!\r\n');
     socket.on('data', function (data) {
         console.log(data.toString());
     });
