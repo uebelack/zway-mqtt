@@ -68,7 +68,7 @@ ZWayMqttBridge.prototype.init = function (config) {
         var locations = self.controller.locations;
         if (locations) {
             for (var i = 0; i < locations.length; i++) {
-                console.log(locations[i]);
+                console.log(locations[i].id);
                 if (locations[i].id == id) {
                     return locations[i];
                 }
