@@ -64,12 +64,8 @@ ZWayMqttBridge.prototype.init = function (config) {
     };
 
     this.findRoom = function(id) {
-        return self.controller.locations.forEach(function(room) {
-            self.log(room);
-           if (room.id == id) {
-               self.log('Found Room!');
-               return room;
-           }
+        return self.controller.locations.find(function(room) {
+            return room.id == id;
         });
     };
 
