@@ -53,7 +53,7 @@ ZWayMqttBridge.prototype.init = function (config) {
                     if (message.topic && message.payload) {
                         self.controller.devices.filter(function (device) {
                             var device_topic = self.createTopic(device);
-                            return device_topic + '/' + 'set' == topic;
+                            return device_topic + '/' + 'set' == message.topic;
                         }).map(function(device) {
                             device.performCommand(message.payload);
                         });
