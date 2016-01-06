@@ -96,7 +96,7 @@ ZWayMqttBridge.prototype.init = function (config) {
 
     this.normalizeTopicToken = function(token) {
         token = token.toLowerCase();
-        //token = token.replace(/[^0-9a-z_]/g, '_');
+        token = token.replace(/[^0-9a-z_]/g, '_');
         return token;
     };
 
