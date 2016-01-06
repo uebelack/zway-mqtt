@@ -14,8 +14,7 @@
     "title" : "ZWayMqttBridge",
     "description" : "Simple Module needed by the ZWay Mqtt bridge",
     "host": "localhost",
-    "port": "8888",
-    "secret": ""
+    "port": "8888"
   },
   "schema": {
     "type": "object",
@@ -24,9 +23,6 @@
         "required": true
       },
       "port": {
-        "required": true
-      },
-      "secret": {
         "required": true
       }
     },
@@ -40,10 +36,6 @@
       },
       "port": {
         "label": "Port",
-        "required": true
-      },
-      "secret": {
-        "label": "Secret",
         "required": true
       }
     }
