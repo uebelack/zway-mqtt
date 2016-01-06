@@ -17,6 +17,8 @@ ZWayMqttBridge.prototype.init = function (config) {
 
     var self = this;
 
+
+
     this.log = function(message) {
         console.log('ZWayMqttBridge: ' + message);
     };
@@ -60,12 +62,36 @@ ZWayMqttBridge.prototype.init = function (config) {
         }
     };
 
+    this.findRoom = function(id) {
+        return self.controller.locations.forEach(function(room) {
+           if (room.id == id) {
+               return room;
+           }
+        });
+    };
+
+    this.createTopic = function(device) {
+        topic = '/';
+        topic += self.config.topic_prefix;
+        topic += '/';
+        topic += self.normalizeTopicToken(self.findRoom(device.get('location')));
+        topic += '/';
+        topic += self.normalizeTopicToken(device.get('metrics:title'));
+        return title;
+    };
+
+    this.normalizeTopicToken = function(token) {
+        token = token.toLowerCase();
+        token = token.replace(/[^0-9a-z_]/g, '_');
+        return token;
+    };
+
     this.deviceUpdate = function (device) {
         if (self.mqttBridge) {
-            var devmap = JSON.parse(JSON.stringify(device))
+
             var message = {
-                'topic': devmap['metrics']['title'],
-                'payload': devmap['metrics']['level']
+                'topic': self.createTopic(device),
+                'payload': device.get('metric:level')
             };
 
             var str = JSON.stringify(message);
@@ -80,12 +106,6 @@ ZWayMqttBridge.prototype.init = function (config) {
             }
 
             self.mqttBridge.send(buf);
-
-            self.controller.devices.forEach(function(dev) {
-               self.log(dev.get('metrics:title'))
-            });
-
-            self.log(JSON.stringify(self.controller.locations));
         }
     };
 

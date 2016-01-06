@@ -14,7 +14,8 @@
     "title" : "ZWayMqttBridge",
     "description" : "Simple Module needed by the ZWay Mqtt bridge",
     "host": "localhost",
-    "port": "8888"
+    "port": "8888",
+    "topic_prefix": "zway"
   },
   "schema": {
     "type": "object",
@@ -25,14 +26,8 @@
       "port": {
         "required": true
       },
-      "devices": {
-        "type": "array",
-        "items": {
-          "field":"enum",
-          "datasource": "namespaces",
-          "enum": "namespaces:devices_toggleButton:deviceId, namespaces:devices_switchControl:deviceId,namespaces:devices_switchBinary:deviceId,namespaces:devices_switchMultilevel:deviceId,namespaces:devices_sensorBinary:deviceId,namespaces:devices_sensorMultilevel:deviceId,namespaces:devices_sensorMultiline:deviceId,namespaces:devices_toggleButton:deviceId,namespaces:devices_fan:deviceId,namespaces:devices_doorLock:deviceId,namespaces:devices_thermostat:deviceId",
-          "required": false
-        }
+      "topic_prefix": {
+        "required": true
       }
     },
     "required": true
@@ -45,6 +40,10 @@
       },
       "port": {
         "label": "Port",
+        "required": true
+      },
+      "topic_prefix": {
+        "label": "Topix Prefix",
         "required": true
       }
     }
