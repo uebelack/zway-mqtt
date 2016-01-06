@@ -17,62 +17,60 @@ ZWayMqttBridge.prototype.init = function (config) {
 
     var self = this;
 
+    this.log = function(message) {
+        console.log('ZWayMqttBridge: ' + message);
+    };
 
-    console.log(self.config.host);
-    console.log(self.port);
-    console.log(self.secret);
-
+    if (!self.config.host || !self.config.port) {
+        this.log('Host or port not configured! will not start!')
+    };
 
     this.reconnect = function () {
         self.connected = false;
         self.mqttBridge = null;
-        console.log('Will try to reconnect to Mqtt Bridge in 10 seconds ...');
+        self.log('Will try to reconnect to Mqtt Bridge in 10 seconds ...');
         setTimeout(function () {
-            console.log('Will try to reconnect to Mqtt Bridge ...');
             self.connect();
         }, 10000);
     };
 
     this.connect = function () {
-        console.log('Connecting to Mqtt Bridge ....');
+        self.log('Connecting to Mqtt Bridge ....');
 
         this.mqttBridge = new sockets.tcp();
-
         this.mqttBridge.onrecv = function (data) {
-            console.log('Mqtt Bridge server:' + String.fromCharCode.apply(null, new Uint8Array(data)));
             self.connected = true;
         };
 
         this.mqttBridge.onclose = function () {
-            console.log('Mqtt Bridge websocket was closed!');
+            self.log('Mqtt Bridge connection was closed!');
             self.reconnect();
         };
 
-        if (this.mqttBridge.connect('192.168.0.62', 8080)) {
+        if (this.mqttBridge.connect(self.config.host, parseInt(self.config.port))) {
             setTimeout(function () {
                 if (self.mqttBridge && !self.connected) {
-                    console.log('Could not connect to Mqtt Bridge after 5 seconds!');
+                    self.log('Mqtt Bridge connection timeout!');
                     self.reconnect();
                 }
             }, 5000);
         } else {
-            console.log('Could not connect to Mqtt Bridge!');
+            self.log('Could not connect to Mqtt Bridge!');
             self.reconnect();
         }
     };
 
     this.deviceUpdate = function (device) {
         if (self.mqttBridge) {
-            console.log('Mqtt Bridge: Sending update to Client...')
-
             var devmap = JSON.parse(JSON.stringify(device))
-
             var message = {
                 'topic': devmap['metrics']['title'],
                 'payload': devmap['metrics']['level']
-            }
+            };
 
             var str = JSON.stringify(message);
+
+            self.log('Sending update to bridge:' + str);
 
             var buf = new ArrayBuffer(str.length); // 2 bytes for each char
             var bufView = new Uint8Array(buf);

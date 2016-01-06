@@ -7,7 +7,7 @@ var server = net.createServer();
 
 server.on('connection', function(socket) { //This is a standard net.Socket
     console.log('Got a client!');
-    socket.write('Welcome to ZWayMqttBridge!\r\n');
+    socket.write('ZWayMqttBridge\r\n');
     socket.on('data', function (data) {
         console.log(data.toString());
         var message = JSON.parse(data.toString());
