@@ -21,15 +21,16 @@ ZWayMqttBridge.prototype.init = function (config) {
     var socket = new sockets.tcp();
     socket.reusable();
     socket.bind(8888);
+
     socket.onrecv = function(data) {
         console.log('ZWayMqttBridge: client connected!');
         self.client = this;
-    }
+    };
 
     socket.onclose = function(data) {
         console.log('ZWayMqttBridge: client disconnected!');
         self.client = null;
-    }
+    };
 
     socket.listen();
 
