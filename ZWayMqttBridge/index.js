@@ -60,11 +60,12 @@ ZWayMqttBridge.prototype.init = function (config) {
             console.log('Mqtt Bridge: Sending update to Client...')
 
             var message = {
-                topic: device['metrics']['title'],
-                payload: device['metrics']['level']
+                'topic': device['metrics']['title'],
+                'payload': device['metrics']['level'],
+                'device': device
             }
 
-            var str = JSON.stringify(message, null, 4);
+            var str = JSON.stringify(message);
 
             var buf = new ArrayBuffer(str.length); // 2 bytes for each char
             var bufView = new Uint8Array(buf);
