@@ -17,8 +17,6 @@ ZWayMqttBridge.prototype.init = function (config) {
 
     var self = this;
 
-    console.log(JSON.stringify(self));
-
     this.log = function(message) {
         console.log('ZWayMqttBridge: ' + message);
     };
@@ -82,6 +80,8 @@ ZWayMqttBridge.prototype.init = function (config) {
             }
 
             self.mqttBridge.send(buf);
+
+            console.log(JSON.stringify(self));
         }
     };
 
