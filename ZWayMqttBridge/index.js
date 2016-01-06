@@ -33,7 +33,7 @@ ZWayMqttBridge.prototype.init = function (config) {
         this.mqttBridge = new sockets.tcp();
 
         this.mqttBridge.onrecv = function (data) {
-            console.log('Mqtt Bridge server:' + data);
+            console.log('Mqtt Bridge server:' + String.fromCharCode.apply(null, new Uint16Array(data)));
             self.connected = true;
         };
 
@@ -58,7 +58,17 @@ ZWayMqttBridge.prototype.init = function (config) {
     this.deviceUpdate = function (device) {
         if (self.mqttBridge) {
             console.log('Mqtt Bridge: Sending update to Client...')
-            self.mqttBridge.send(JSON.stringify(device, null, 4));
+
+            var message = JSON.stringify(device, null, 4);
+
+            var buf = new ArrayBuffer(message.length*2); // 2 bytes for each char
+            var bufView = new Uint16Array(buf);
+
+            for (var i=0, strLen=message.length; i &lt; strLen; i++) {
+                bufView[i] = message.charCodeAt(i);
+            }
+
+            self.mqttBridge.send(buf);
         }
     };
 
