@@ -43,7 +43,7 @@
         "required": true
       },
       "topic_prefix": {
-        "label": "Topix Prefix",
+        "label": "Topic Prefix",
         "required": true
       }
     }

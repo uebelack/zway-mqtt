@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Z-Way MQTT bridge",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/goodfield/zway-mqtt.git"
@@ -17,9 +14,6 @@
   },
   "homepage": "https://github.com/goodfield/zway-mqtt#readme",
   "dependencies": {
-    "json-socket": "^0.1.2",
-    "mqtt": "^1.6.3",
-    "socket.io": "^1.4.0",
-    "websocket": "^1.0.22"
+    "mqtt": "^1.6.3"
   }
 }

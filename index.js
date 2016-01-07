@@ -1,12 +1,13 @@
 var mqtt = require('mqtt');
 var net = require('net');
+var config = require('./config');
 
-var mqttClient = mqtt.connect('mqtt://192.168.0.210');
+var mqttClient = mqtt.connect(config.mqtt);
 var bridgeServer = net.createServer();
 var bridgeClient = null;
 
 mqttClient.on('connect', function () {
-    mqttClient.subscribe('halti/#');
+    mqttClient.subscribe(config.topic_prefix + '/#');
 });
 
 mqttClient.on('message', function (topic, payload) {
@@ -24,18 +25,19 @@ bridgeServer.on('connection', function (socket) {
     bridgeClient.on('data', function (data) {
         var dataStr = data.toString();
         if (dataStr.indexOf('}') > 0) {
-            var messages = dataStr.split('}');
+            var messages = dataStr.split(/\r?\n/);
             messages.forEach(function (messageStr) {
-                var message = JSON.parse(messageStr);
-                if (message && message.payload) {
-                    console.log("RECIEVED: " + data.toString())
-                    mqttClient.publish(message.topic, message.payload.toString());
+                if (messageStr.indexOf('}') > 0) {
+                    var message = JSON.parse(messageStr);
+                    if (message && message.payload) {
+                        console.log("RECIEVED: " + messageStr)
+                        mqttClient.publish(message.topic, message.payload.toString());
+                    }
                 }
             });
         }
-
     });
 });
 
 
-bridgeServer.listen(8080);
+bridgeServer.listen(config.port);
