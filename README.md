@@ -7,8 +7,8 @@ A simple nodejs app to bridge ZWay to a MQTT broker.
 
 The bridge consist of two modules:
 
-+ Z-Way module called ZWayMqttBridge, which exposes a socket on the zway server to access events and change states
-+ The node script, which connects to the zway server and the mqtt broker
++ The node script, which connects exposes a socket for the zway server and connects to the mqtt broker
++ Z-Way module called ZWayMqttBridge, which connects to the zway-mqtt socket to pubish and consume events
 
 
 ### Installation
