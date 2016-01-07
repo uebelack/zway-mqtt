@@ -31,7 +31,7 @@ In zway-mqtt directory create **config.js**:
     };   
     module.exports = config;
 
-In z-way Web application active and configure ZWayMqttBridge App.
+In z-way Web application activate and configure ZWayMqttBridge App.
 
 ### Start
 In the zway-mqtt directory:
