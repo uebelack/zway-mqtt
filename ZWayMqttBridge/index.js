@@ -116,6 +116,7 @@ ZWayMqttBridge.prototype.init = function (config) {
             };
 
             var str = JSON.stringify(message);
+            str += '\r\n';
             self.log('Sending update to bridge:' + str);
             var buf = new ArrayBuffer(str.length); // 2 bytes for each char
             var bufView = new Uint8Array(buf);

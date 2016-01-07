@@ -1,7 +1,7 @@
 var mqtt = require('mqtt');
 var net = require('net');
 
-var mqttClient  = mqtt.connect('mqtt://192.168.0.210');
+var mqttClient = mqtt.connect('mqtt://192.168.0.210');
 var bridgeServer = net.createServer();
 var bridgeClient = null;
 
@@ -17,16 +17,23 @@ mqttClient.on('message', function (topic, payload) {
     }
 });
 
-bridgeServer.on('connection', function(socket) {
+bridgeServer.on('connection', function (socket) {
     bridgeClient = socket;
     console.log("Client connected!")
     bridgeClient.write('HELLO')
     bridgeClient.on('data', function (data) {
-        var message = JSON.parse(data.toString());
-        if (message && message.payload) {
-            console.log("RECIEVED: " + data.toString())
-            mqttClient.publish(message.topic, message.payload.toString());
+        var dataStr = data.toString();
+        if (dataStr.indexOf('}') > 0) {
+            var messages = dataStr.split('}');
+            messages.forEach(function (messageStr) {
+                var message = JSON.parse(messageStr);
+                if (message && message.payload) {
+                    console.log("RECIEVED: " + data.toString())
+                    mqttClient.publish(message.topic, message.payload.toString());
+                }
+            });
         }
+
     });
 });
 
