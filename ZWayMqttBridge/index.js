@@ -55,7 +55,14 @@ ZWayMqttBridge.prototype.init = function (config) {
                             var device_topic = self.createTopic(device);
                             return device_topic + '/' + 'set' == message.topic;
                         }).map(function(device) {
-                            device.performCommand(message.payload);
+
+                            var command = message.payload;
+
+                            if (!isNaN(parseFloat(command)) && isFinite(command)) {
+                                command = parseInt(command);
+                            }
+
+                            device.performCommand(command);
                         });
                     }
                 }
