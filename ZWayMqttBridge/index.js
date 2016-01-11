@@ -3,6 +3,7 @@
  -----------------------------------------------------------------------------
  Author: David Uebelacker <david@uebelacker.ch>
  ******************************************************************************/
+//https://github.com/yilun/node_mqtt_client/blob/master/MQTTClient.js
 
 function ZWayMqttBridge(id, controller) {
     ZWayMqttBridge.super_.call(this, id, controller);
@@ -54,15 +55,16 @@ ZWayMqttBridge.prototype.init = function (config) {
                         self.controller.devices.filter(function (device) {
                             var device_topic = self.createTopic(device);
                             return device_topic + '/' + 'set' == message.topic;
-                        }).map(function(device) {
+                        }).map(function (device) {
 
-                            var command = message.payload;
-
-                            if (!isNaN(parseFloat(command)) && isFinite(command)) {
-                                command = parseInt(command);
+                            if (message.payload == 'on'
+                                || message.payload == 'off'
+                                || message.payload == 'status') {
+                                device.performCommand(message.payload);
+                            } else {
+                                var payload = JSON.parse(message.payload);
+                                device.performCommand(payload.command, payload.attributes);
                             }
-
-                            device.performCommand(command);
                         });
                     }
                 }
