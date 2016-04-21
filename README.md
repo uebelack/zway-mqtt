@@ -15,7 +15,7 @@ MQTT module for Z-Way Home Automation engine.
 Access Z-Way Home Automation web application and activate/configure MQTT module
 
 ### Usage
-The topic for the devices are defined as following:
+The topics for the devices are defined as following:
 
     [Topic Prefix]/[Room]/[Device Name]
     (e.g: myhome/Living/Light1)
