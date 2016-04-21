@@ -1,40 +1,31 @@
-ZWay MQTT Bridge 
-=========
+MQTT module for Z-Way  
+============================================
 
-A simple nodejs app to bridge ZWay to a MQTT broker. 
+MQTT module for Z-Way Home Automation engine. 
 
-## Quickstart
-
-The bridge consist of two modules:
-
-+ The node script, which connects exposes a socket for the zway server and connects to the mqtt broker
-+ Z-Way module called ZWayMqttBridge, which connects to the zway-mqtt socket to pubish and consume events
++ Publishes all device events to a MQTT broker
++ Devices can be controlled with MQTT messages
 
 
-### Installation
-    git clone git@github.com:goodfield/zway-mqtt.git
-    cd zway-mqtt
-    cp -r ZWayMqttBridge /opt/z-way-server/automation/modules
-    npm install
+### Installation (on RaZberry)
     
-### Configuration
-In zway-mqtt directory create **config.js**:
- 
-    var config = {}
-    config.port = 8080;
-    config.topic_prefix = 'zway';
-    config.mqtt = {
-      host: '192.168.0.250',
-      port: 1883,
-      username: 'user',
-      password: 'password'
-    };   
-    module.exports = config;
+    git clone git@github.com:goodfield/zway-mqtt.git /opt/z-way-server/automation/modules/MQTT
+    /etc/init.d/z-way-server restart
+    
+Access Z-Way Home Automation web application and activate/configure MQTT module
 
-In z-way Web application activate and configure ZWayMqttBridge App.
+### Usage
+The topic for the devices are defined as following:
 
-### Start
-In the zway-mqtt directory:
+    [Topic Prefix]/[Room]/[Device Name]
+    (e.g: myhome/Living/Light1)
 
-    node index.js
+Devices can be controlled by adding following suffixes to the topic:
+
++ status: get the current status of a device (no payload)
+(e.g.: myhome/Living/Light1/status)
++ set: change the value of a device (on|off as payload) 
+(e.g.: myhome/Living/Light1/set on)
+
+
 

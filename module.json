@@ -1,0 +1,74 @@
+{
+  "singleton" : true,
+  "category" : "device_enhancements",
+  "author" : "David Uebelacker",
+  "icon" : "icon.png",
+  "moduleName":"MQTT",
+  "version" : "0.0.1",
+  "maturity" : "alpha",
+  "repository" : {
+    "type" : "git",
+    "source" : "https://github.com/goodfield/zway-mqtt"
+  },
+  "defaults" : {
+    "title" : "MQTT",
+    "description" : "MQTT client",
+    "host": "localhost",
+    "port": "1883",
+    "topic_prefix": "zway",
+    "client_id": "zway"
+  },
+  "schema": {
+    "type": "object",
+    "properties": {
+      "client_id": {
+        "required": true
+      },
+      "topic_prefix": {
+        "required": true
+      },
+      "host": {
+        "required": true
+      },
+      "port": {
+        "required": true
+      },
+      "user": {
+        "required": false
+      },
+      "password": {
+        "required": false
+      }
+    },
+    "required": true
+  },
+  "options": {
+    "fields": {
+      "client_id": {
+        "label": "Client Id",
+        "required": true
+      },
+      "topic_prefix": {
+        "label": "Topic Prefix",
+        "required": true
+      },
+      "host": {
+        "label": "Hostname/IP",
+        "required": true
+      },
+      "port": {
+        "label": "Port",
+        "required": true
+      },
+      "user": {
+        "label": "User",
+        "required": false
+      },
+      "password": {
+        "label": "Password",
+        "required": false
+      }
+    }
+  }
+}
+
