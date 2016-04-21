@@ -1605,9 +1605,8 @@ MQTT.prototype.init = function (config) {
         if (self.mqttClient && self.mqttClient.connected) {
             var topic = self.createTopic(device);
             var value = device.get('metrics:level');
-
             if (force || !self.status[topic] || self.status[topic] !== value) {
-                self.mqttClient.publish(topic, value);
+                self.mqttClient.publish(topic, value.toString().trim());
             }
 
             self.status[topic] = value;
@@ -1636,13 +1635,15 @@ MQTT.prototype.init = function (config) {
                     return device_topic + '/' + 'set' == topic || device_topic + '/' + 'status' == topic;
                 }).map(function (device) {
                     var device_topic = self.createTopic(device);
-                    if (payload == 'on'
-                        || payload == 'off') {
-                        device.performCommand(payload);
-                    } else if (topic == device_topic + '/status') {
+                    if (topic == device_topic + '/status') {
                         self.deviceUpdate(device, true);
                     } else {
-                        device.performCommand(payload.command, payload.attributes);
+                        if (device.deviceType === 'switchMultilevel'
+                        && payload !== 'on' && payload !== 'off') {
+                            device.performCommand({l:payload+'%'});
+                        } else {
+                            device.performCommand(payload);
+                        }
                     }
                 });
             });
