@@ -1573,7 +1573,6 @@ MQTT.prototype.init = function (config) {
     MQTT.super_.prototype.init.call(this, config);
 
     var self = this;
-    self.status = [];
 
     this.log = function (message) {
         console.log('MQTT: ' + message);
@@ -1601,15 +1600,11 @@ MQTT.prototype.init = function (config) {
         return topic;
     };
 
-    this.deviceUpdate = function (device, force) {
+    this.deviceUpdate = function (device) {
         if (self.mqttClient && self.mqttClient.connected) {
             var topic = self.createTopic(device);
             var value = device.get('metrics:level');
-            if (force || !self.status[topic] || self.status[topic] !== value) {
-                self.mqttClient.publish(topic, value.toString().trim());
-            }
-
-            self.status[topic] = value;
+            self.mqttClient.publish(topic, value.toString().trim());
         }
     };
 
@@ -1636,7 +1631,7 @@ MQTT.prototype.init = function (config) {
                 }).map(function (device) {
                     var device_topic = self.createTopic(device);
                     if (topic == device_topic + '/status') {
-                        self.deviceUpdate(device, true);
+                        self.deviceUpdate(device);
                     } else {
                         if (device.deviceType === 'switchMultilevel'
                         && payload !== 'on' && payload !== 'off') {
