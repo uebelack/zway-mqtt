@@ -16,7 +16,9 @@
     "host": "localhost",
     "port": "1883",
     "topic_prefix": "zway",
-    "client_id": "zway"
+    "client_id": "zway",
+    "qos": "1",
+    "verbose": true
   },
   "schema": {
     "type": "object",
@@ -37,6 +39,12 @@
         "required": false
       },
       "password": {
+        "required": false
+      },
+      "qos": {
+        "required": false
+      },
+      "verbose": {
         "required": false
       }
     },
@@ -66,6 +74,16 @@
       },
       "password": {
         "label": "Password",
+        "required": false
+      },
+      "qos": {
+        "type": "integer",
+        "label": "QoS Level",
+        "required": false
+      },
+      "verbose": {
+        "label": "Verbose",
+        "type": "checkbox",
         "required": false
       }
     }

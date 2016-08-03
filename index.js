@@ -11,6 +11,8 @@ assert.ok = function (message) {
     console.log(message);
 };
 
+var _mqttConnection = undefined;
+
 Buffer.poolSize = 8192;
 
 function stringtrim(str) {
@@ -408,7 +410,7 @@ Buffer.prototype.fill = function fill(value, start, end) {
     for (var i = start; i < end; i++) {
         this[i] = value;
     }
-}
+};
 
 // Static methods
 Buffer.isBuffer = function isBuffer(b) {
@@ -538,7 +540,6 @@ function decodeUtf8Char(str) {
 }
 
 // read/write bit-twiddling
-
 Buffer.prototype.readUInt8 = function (offset, noAssert) {
     var buffer = this;
 
@@ -1068,43 +1069,6 @@ MQTTClient.decodeHeader = function (fixed_header) {
     return ret;
 };
 
-MQTTClient.connect = function () {
-    var length = 0;
-    for (var i = 0; i < arguments.length; i++)
-        length += arguments[i].length;
-    var ret = new Buffer(length);
-
-    var cur = 0;
-    for (i = 0; i < arguments.length; i++) {
-        var l = arguments[i].length;
-        arguments[i].copy(ret, cur, 0, l);
-        cur += l;
-    }
-    return ret;
-};
-
-MQTTClient.decodeHeader = function (fixed_header) {
-    var ret = {};
-    var b1 = fixed_header[0];
-    ret.message_type = b1 >> 4;
-    ret.dup_flag = (b1 >> 3) & 1;
-    ret.qos_level = (b1 >> 1) & 3;
-    ret.retain = b1 & 1;
-
-    var m = 1;
-    var v = 0;
-    var i = 1;
-    do {
-        var d = fixed_header[i++];
-        if (typeof d == 'undefined')
-            return false;
-        v += (d & 127) * m;
-        m *= 128;
-    } while ((d & 128) != 0);
-    ret.remaining_length = v;
-    ret.fixed_header_length = i;
-    return ret;
-};
 
 MQTTClient.messageHandlers = [];
 
@@ -1272,20 +1236,24 @@ MQTTClient.prototype.connect = function (callback) {
     var self = this;
     this._connectionCallback = callback;
 
-    var connection = new sockets.tcp();
+    if (_mqttConnection) {
+        _mqttConnection.close();
+    }
 
-    connection.onrecv = function (chunk) {
+    _mqttConnection = new sockets.tcp();
+
+    _mqttConnection.onrecv = function (chunk) {
         self._onData(new Buffer(new Uint8Array(chunk)));
     };
 
-    connection.onclose = function () {
+    _mqttConnection.onclose = function () {
         self._onClose();
     };
 
-    if (connection.connect(self.host, self.port)) {
+    if (_mqttConnection.connect(self.host, self.port)) {
         self.connection = {};
         self.connection.write = function (buffer) {
-            connection.send(buffer.toString('binary'));
+            _mqttConnection.send(buffer.toString('binary'));
         };
         self._startSession();
     } else {
@@ -1493,7 +1461,9 @@ MQTTClient.prototype.subscribe = function (topic, options, callback) {
     topic_length[0] = topic.length >> 8;
     topic_length[1] = topic.length & 0xFF;
     var requested_qos = new Buffer(1);
+    console.log('MQTT QOS:' + options.qos_level);
     requested_qos[0] = options.qos_level & 0x03;
+    console.log('MQTT QOS.>:' + requested_qos[0]);
     var payload = MQTTClient.connect(topic_length, topic, requested_qos);
     // Fixed Header
     var fixed_header = MQTTClient.fixedHeader(MQTTClient.SUBSCRIBE, options.dup_flag, 1, 0,
@@ -1571,11 +1541,19 @@ _module = MQTT;
 
 MQTT.prototype.init = function (config) {
     MQTT.super_.prototype.init.call(this, config);
+    console.log('MQTT: starting...');
 
     var self = this;
 
+    self.status = {};
+
     this.log = function (message) {
         console.log('MQTT: ' + message);
+    };
+
+    this.verbose = function (message) {
+        if (self.config.verbose)
+            console.log('MQTT: ' + message);
     };
 
     this.findRoom = function (id) {
@@ -1604,6 +1582,8 @@ MQTT.prototype.init = function (config) {
         if (self.mqttClient && self.mqttClient.connected) {
             var topic = self.createTopic(device);
             var value = device.get('metrics:level');
+            self.status[topic] = value;
+            self.verbose('publishing: ' + topic + ': ' + value);
             self.mqttClient.publish(topic, value.toString().trim());
         }
     };
@@ -1624,16 +1604,16 @@ MQTT.prototype.init = function (config) {
                 self.connect();
             });
 
-            self.mqttClient.subscribe(self.config.topic_prefix + '/#', {}, function (topic, payload) {
+            self.mqttClient.subscribe(self.config.topic_prefix + '/#', {qos_level: parseInt(self.config.qos)}, function (topic, payload) {
                 self.controller.devices.filter(function (device) {
                     var device_topic = self.createTopic(device);
                     return device_topic + '/' + 'set' == topic || device_topic + '/' + 'status' == topic;
                 }).map(function (device) {
                     var device_topic = self.createTopic(device);
+                    self.verbose('update: ' + topic + ': ' + payload);
                     if (topic == device_topic + '/status') {
                         self.deviceUpdate(device);
                     } else {
-
                         if(device.get('deviceType') === 'switchMultilevel') {
                             if(payload !== 'on' && payload !== 'off') {
                                 device.performCommand('exact',{level:payload});
