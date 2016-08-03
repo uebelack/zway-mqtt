@@ -1633,12 +1633,18 @@ MQTT.prototype.init = function (config) {
                     if (topic == device_topic + '/status') {
                         self.deviceUpdate(device);
                     } else {
-                        if (device.deviceType === 'switchMultilevel'
-                        && payload !== 'on' && payload !== 'off') {
-                            device.performCommand({l:payload+'%'});
-                        } else {
+
+                        if(device.get('deviceType') === 'switchMultilevel') {
+                            if(payload !== 'on' && payload !== 'off') {
+                                device.performCommand('exact',{level:payload});
+                            } else {
+                                device.performCommand(payload);
+                            }
+                        }
+                        else {
                             device.performCommand(payload);
                         }
+
                     }
                 });
             });
@@ -1653,3 +1659,4 @@ MQTT.prototype.init = function (config) {
         this.controller.devices.on('change:metrics:level', self.deviceUpdate);
     }
 };
+
