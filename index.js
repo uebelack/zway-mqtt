@@ -1461,9 +1461,7 @@ MQTTClient.prototype.subscribe = function (topic, options, callback) {
     topic_length[0] = topic.length >> 8;
     topic_length[1] = topic.length & 0xFF;
     var requested_qos = new Buffer(1);
-    console.log('MQTT QOS:' + options.qos_level);
     requested_qos[0] = options.qos_level & 0x03;
-    console.log('MQTT QOS.>:' + requested_qos[0]);
     var payload = MQTTClient.connect(topic_length, topic, requested_qos);
     // Fixed Header
     var fixed_header = MQTTClient.fixedHeader(MQTTClient.SUBSCRIBE, options.dup_flag, 1, 0,
@@ -1544,6 +1542,7 @@ MQTT.prototype.init = function (config) {
     console.log('MQTT: starting...');
 
     var self = this;
+    this.config = config;
 
     self.status = {};
 
@@ -1582,9 +1581,14 @@ MQTT.prototype.init = function (config) {
         if (self.mqttClient && self.mqttClient.connected) {
             var topic = self.createTopic(device);
             var value = device.get('metrics:level');
-            self.status[topic] = value;
-            self.verbose('publishing: ' + topic + ': ' + value);
-            self.mqttClient.publish(topic, value.toString().trim());
+
+            self.status[topic] = setTimeout(function () {
+                if (self.status[topic]) {
+                    clearTimeout(self.status[topic]);
+                }
+                self.verbose('publishing: ' + topic + ': ' + value);
+                self.mqttClient.publish(topic, value.toString().trim(), {qos_level: parseInt(self.config.qos)});
+            }, 500);
         }
     };
 
@@ -1597,6 +1601,9 @@ MQTT.prototype.init = function (config) {
 
             self.mqttClient.onError(function (error) {
                 self.log('Error: ' + error.toString());
+                if (error.toString().indexOf('Timeout') !== -1) {
+                    self.connect();
+                }
             });
 
             self.mqttClient.onDisconnect(function () {
@@ -1604,15 +1611,22 @@ MQTT.prototype.init = function (config) {
                 self.connect();
             });
 
-            self.mqttClient.subscribe(self.config.topic_prefix + '/#', {qos_level: parseInt(self.config.qos)}, function (topic, payload) {
+            self.mqttClient.subscribe(self.config.topic_prefix + '/#', {}, function (topic, payload) {
                 self.controller.devices.filter(function (device) {
                     var device_topic = self.createTopic(device);
                     return device_topic + '/' + 'set' == topic || device_topic + '/' + 'status' == topic;
                 }).map(function (device) {
                     var device_topic = self.createTopic(device);
-                    self.verbose('update: ' + topic + ': ' + payload);
+                    self.verbose('subscription: ' + topic + ': ' + payload);
                     if (topic == device_topic + '/status') {
                         self.deviceUpdate(device);
+                    } else if (topic == device_topic + '/toggle') {
+                        var value = device.get('metrics:level').toString().trim();
+                        if (value === 'on') {
+                            device.performCommand('off');
+                        } else {
+                            device.performCommand('on');
+                        }
                     } else {
                         if(device.get('deviceType') === 'switchMultilevel') {
                             if(payload !== 'on' && payload !== 'off') {
