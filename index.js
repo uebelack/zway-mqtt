@@ -1614,7 +1614,9 @@ MQTT.prototype.init = function (config) {
             self.mqttClient.subscribe(self.config.topic_prefix + '/#', {}, function (topic, payload) {
                 self.controller.devices.filter(function (device) {
                     var device_topic = self.createTopic(device);
-                    return device_topic + '/' + 'set' == topic || device_topic + '/' + 'status' == topic;
+                    return device_topic + '/' + 'set' == topic
+                        || device_topic + '/' + 'status' == topic
+                        || device_topic + '/' + 'toggle' == topic;;
                 }).map(function (device) {
                     var device_topic = self.createTopic(device);
                     self.verbose('subscription: ' + topic + ': ' + payload);
