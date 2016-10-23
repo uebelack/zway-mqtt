@@ -26,6 +26,8 @@ Devices can be controlled by adding following suffixes to the topic:
 (e.g.: myhome/Living/Light1/status)
 + set: change the value of a device (on|off as payload) 
 (e.g.: myhome/Living/Light1/set on)
++ toggle: toggle the value of a device (from on to off/off to on)
+(e.g.: myhome/Living/Light1/toggle)
 
 
 
