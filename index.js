@@ -63,13 +63,21 @@ MQTT.prototype.init = function (config) {
             var topic = self.createTopic(device);
             var value = device.get('metrics:level');
 
-            self.status[topic] = setTimeout(function () {
-                if (self.status[topic]) {
-                    clearTimeout(self.status[topic]);
+            if (self.status[topic] === undefined) {
+                self.status[topic] = 0;
+            }
+
+            var status = ++self.status[topic];
+
+            setTimeout(function () {
+                if (self.status[topic] === status) {
+                    self.verbose('publishing: ' + topic + ': ' + value + ' [retain: ' + self.config.retain + ']');
+                    self.mqttClient.publish(topic, value.toString().trim(), {retain: self.config.retain});
+                    self.status[topic] = 0;
+                } else {
+                    self.verbose('not publishing: ' + topic + ': ' + value + ' [status: ' + status + ', last status:' + self.status[topic] + ' ]');
                 }
-                self.verbose('publishing: ' + topic + ': ' + value + ' [retain: ' + self.config.retain + ']');
-                self.mqttClient.publish(topic, value.toString().trim(), {retain: self.config.retain});
-            }, 10);
+            }, 200);
         }
     };
 
@@ -84,7 +92,13 @@ MQTT.prototype.init = function (config) {
                 self.log(error.toString());
                 if (error.toString().indexOf('Timeout') !== -1) {
                     self.connect();
-                } else if (error.toString().indexOf('111') !== -1) {
+                } else if (error.toString().indexOf('Unknow Error') !== -1) {
+                    var match = /Unknow Error: #([\d]+)/.exec(error.toString());
+                    var errorCode = parseInt(match[1]);
+                    if (errorCode >= 100) {
+                        self.connect();
+                    }
+                } else if (error.toString().indexOf('Please connect to server first') !== -1) {
                     self.connect();
                 }
             });
@@ -113,9 +127,9 @@ MQTT.prototype.init = function (config) {
                             device.performCommand('on');
                         }
                     } else {
-                        if(device.get('deviceType') === 'switchMultilevel') {
-                            if(payload !== 'on' && payload !== 'off') {
-                                device.performCommand('exact',{level:payload});
+                        if (device.get('deviceType') === 'switchMultilevel') {
+                            if (payload !== 'on' && payload !== 'off') {
+                                device.performCommand('exact', {level: payload});
                             } else {
                                 device.performCommand(payload);
                             }
