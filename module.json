@@ -17,7 +17,7 @@
     "port": "1883",
     "topic_prefix": "zway",
     "client_id": "zway",
-    "qos": "1",
+    "retain": "0",
     "verbose": true
   },
   "schema": {
@@ -41,7 +41,7 @@
       "password": {
         "required": false
       },
-      "qos": {
+      "retain": {
         "required": false
       },
       "verbose": {
@@ -76,9 +76,9 @@
         "label": "Password",
         "required": false
       },
-      "qos": {
-        "type": "integer",
-        "label": "QoS Level",
+      "retain": {
+        "label": "Retain",
+        "type": "checkbox",
         "required": false
       },
       "verbose": {
