@@ -13,36 +13,52 @@
   "defaults" : {
     "title" : "MQTT",
     "description" : "MQTT client",
-    "host": "localhost",
-    "port": "1883",
-    "topic_prefix": "zway",
-    "client_id": "zway",
-    "retain": "0",
+    "mqtt_host": "localhost",
+    "mqtt_port": "1883",
+    "mqtt_topic_prefix": "zway",
+    "mqtt_client_id": "zway",
+    "mqtt_qos_publish": "0",
+    "mqtt_qos_subscribe": "0",
+    "mqtt_retain": "0",
+    "zway_user": "admin",
+    "zway_password": "",
     "verbose": true
   },
   "schema": {
     "type": "object",
     "properties": {
-      "client_id": {
+      "mqtt_client_id": {
         "required": true
       },
-      "topic_prefix": {
+      "mqtt_topic_prefix": {
         "required": true
       },
-      "host": {
+      "mqtt_host": {
         "required": true
       },
-      "port": {
+      "mqtt_port": {
         "required": true
       },
-      "user": {
+      "mqtt_user": {
         "required": false
       },
-      "password": {
+      "mqtt_password": {
         "required": false
       },
-      "retain": {
+      "mqtt_qos_publish": {
         "required": false
+      },
+      "mqtt_qos_subscribe": {
+        "required": false
+      },
+      "mqtt_retain": {
+        "required": false
+      },
+      "zway_user": {
+        "required": true
+      },
+      "zway_password": {
+        "required": true
       },
       "verbose": {
         "required": false
@@ -52,34 +68,51 @@
   },
   "options": {
     "fields": {
-      "client_id": {
-        "label": "Client Id",
+      "mqtt_client_id": {
+        "label": "MQTT client id",
         "required": true
       },
-      "topic_prefix": {
-        "label": "Topic Prefix",
+      "mqtt_topic_prefix": {
+        "label": "MQTT topic prefix",
         "required": true
       },
-      "host": {
-        "label": "Hostname/IP",
+      "mqtt_host": {
+        "label": "MQTT broker hostname/ip",
         "required": true
       },
-      "port": {
-        "label": "Port",
+      "mqtt_port": {
+        "label": "MQTT broker port",
         "required": true
       },
-      "user": {
-        "label": "User",
+      "mqtt_user": {
+        "label": "MQTT User",
         "required": false
       },
-      "password": {
-        "label": "Password",
+      "mqtt_password": {
+        "label": "MQTT Password",
         "required": false
       },
-      "retain": {
-        "label": "Retain",
+      "mqtt_qos_publish": {
+        "label": "MQTT QOS publish",
+        "required": false
+      },
+      "mqtt_qos_subscribe": {
+        "label": "MQTT QOS subscribe",
+        "required": false
+      },
+      "mqtt_retain": {
+        "label": "MQTT Retain",
         "type": "checkbox",
         "required": false
+      },
+      "zway_user": {
+        "label": "ZWave.Me user",
+        "required": true
+      },
+      "zway_password": {
+        "label": "ZWave.Me password",
+        "type": "password",
+        "required": true
       },
       "verbose": {
         "label": "Verbose",
