@@ -5,7 +5,7 @@ if [ `whoami` != 'root' ]
     exit 1
 fi
 
-apt-get -y install supervisor python-dev python-pip
+apt-get -y install supervisor python-dev python-pip git
 pip install tornado
 pip install paho-mqtt
 pip install requests
