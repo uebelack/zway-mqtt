@@ -6,6 +6,7 @@ if [ `whoami` != 'root' ]
 fi
 
 apt-get -y install supervisor python-dev python-pip git
+
 pip install tornado
 pip install paho-mqtt
 pip install requests
@@ -16,7 +17,7 @@ then
 fi
 
 cd /opt/z-way-server/automation/modules
-git clone git@github.com:goodfield/zway-mqtt.git MQTT
+git clone https://github.com/goodfield/zway-mqtt.git MQTT
 
 cp /opt/z-way-server/automation/modules/MQTT/etc/supervisor.zway_mqtt_http_bridge.conf /etc/supervisor/conf.d/zway_mqtt_http_bridge.conf
 update-rc.d supervisor defaults
