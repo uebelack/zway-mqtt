@@ -57,7 +57,7 @@ MQTT.prototype.init = function (config) {
 
     this.createTopic = function (device) {
         var room = self.findRoom(device.get('location'));
-        var topic = self.config.topic_prefix;
+        var topic = self.config.mqtt_topic_prefix;
         topic += '/';
         topic += room.title;
         topic += '/';
@@ -111,7 +111,7 @@ MQTT.prototype.init = function (config) {
         self.verbose('RESPONSE: ' + JSON.stringify(http.request(request)));
     };
 
-    if (!self.config.host || !self.config.port) {
+    if (!self.config.mqtt_host || !self.config.mqtt_port) {
         this.log('Host or port not configured! will not start!')
     } else {
         this.sendConfigToBridge();
