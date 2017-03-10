@@ -77,7 +77,7 @@ class ZwayMqttHttpBride:
         url = self.api_url + '/devices/' + device_id + '/command/'
         if value.isdigit():
             url += 'exact?level='
-        url += value
+        url += value.lower()
         response = requests.get(url, headers={'ZWAYSession': self.api_sid})
         if response.status_code == 200:
             self.verbose('did update device: ' + url)
@@ -91,7 +91,7 @@ class ZwayMqttHttpBride:
         self.config = config
         self.mqtt_qos_publish = int(self.config['mqtt_qos_publish']) if 'mqtt_qos_publish' in config else 0
         self.mqtt_qos_subscribe = int(self.config['mqtt_qos_subscribe']) if 'mqtt_qos_subscribe' in config else 0
-        self.mqtt_retain = 'mqtt_retain' in config and 'true' == self.config['mqtt_retain']
+        self.mqtt_retain = 'mqtt_retain' in config and self.config['mqtt_retain']
         if 'api_url' in config:
             self.api_url = config['api_url']
 

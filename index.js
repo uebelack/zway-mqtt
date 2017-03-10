@@ -69,6 +69,10 @@ MQTT.prototype.init = function (config) {
         var topic = self.createTopic(device);
         var value = device.get('metrics:level');
         if (!device.get('permanently_hidden')) {
+            if (self.config.ignore_global_room && device.get('location') == 0) {
+                self.verbose('self.config.ignore_global_room set to: ' + self.config.ignore_global_room+' and device.location ' +device.location+' so ignoring');
+                return;
+            }
             if (self.status[topic] === undefined
                 || value != self.status[topic].value
                 || (DIRECT_DEVICES.indexOf(device.get('deviceType')) >= 0
@@ -119,3 +123,8 @@ MQTT.prototype.init = function (config) {
     }
 };
 
+MQTT.prototype.stop = function () {
+    MQTT.super_.prototype.stop.call(this);
+    this.controller.devices.off('change:metrics:level', this.deviceUpdate);
+    console.log('MQTT: stopped');
+};
