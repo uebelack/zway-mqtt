@@ -22,7 +22,8 @@
     "mqtt_retain": "0",
     "zway_user": "admin",
     "zway_password": "",
-    "verbose": true
+    "verbose": true,
+    "ignore_global_room": true
   },
   "schema": {
     "type": "object",
@@ -61,6 +62,9 @@
         "required": true
       },
       "verbose": {
+        "required": false
+      },
+      "ignore_global_room": {
         "required": false
       }
     },
@@ -116,6 +120,11 @@
       },
       "verbose": {
         "label": "Verbose",
+        "type": "checkbox",
+        "required": false
+      },
+      "ignore_global_room": {
+        "label": "Only publish state of devices assigned to a room",
         "type": "checkbox",
         "required": false
       }
